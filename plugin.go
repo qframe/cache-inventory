@@ -56,7 +56,7 @@ func (p *Plugin) Run() {
 				p.Log("debug", fmt.Sprintf("Received InventoryRequest for %v", req))
 				p.Inventory.ServeRequest(req)
 			default:
-				p.Log("info", fmt.Sprintf("Dunno type '%s': %v", reflect.TypeOf(val), val))
+				p.Log("trace", fmt.Sprintf("Dunno type '%s': %v", reflect.TypeOf(val), val))
 
 			}
 		case <- ticker:
