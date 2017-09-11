@@ -54,7 +54,7 @@ func (i *Inventory) HandleRequest(req ContainerRequest) (err error) {
 	for _, cnt := range i.Data {
 		res, err := filterItem(req, cnt)
 		if err == nil {
-			req.Back <- NewOKResponse(res)
+			req.Back <- NewOKResponse(&res)
 			return err
 		} else if req.TimedOut() {
 			err = errors.New(fmt.Sprintf("Timed out after %s", req.Timeout.String()))

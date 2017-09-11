@@ -6,11 +6,11 @@ import (
 
 
 type Response struct {
-	Container types.ContainerJSON
+	Container *types.ContainerJSON
 	Error     error
 }
 
-func NewOKResponse(cnt types.ContainerJSON) Response {
+func NewOKResponse(cnt *types.ContainerJSON) Response {
 	var err error
 	return Response{
 		Container: cnt,
@@ -19,7 +19,7 @@ func NewOKResponse(cnt types.ContainerJSON) Response {
 }
 
 func NewFAILResponse(err error) Response {
-	var cnt types.ContainerJSON
+	var cnt *types.ContainerJSON
 	return Response{
 		Container: cnt,
 		Error: err,
