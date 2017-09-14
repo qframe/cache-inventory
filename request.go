@@ -50,21 +50,27 @@ func NewIPContainerRequest(src, ip string) ContainerRequest {
 	return cr
 }
 
-func (this ContainerRequest) Equal(other types.ContainerJSON) bool {
-	matchIP := false
-	if this.IP != "" && other.NetworkSettings.IPAddress == this.IP {
-		matchIP = true
-	}
-	if other.NetworkSettings.Networks != nil {
-		for _, net := range other.NetworkSettings.Networks {
-			if this.IP == net.IPAddress {
-				matchIP = true
-			}
-		}
-	}
+func (this ContainerRequest) Equal(other Response) bool {
+	return this.EqualCnt(other.Container) && this.EqualIPS(other.Ips)
+}
+
+func (this ContainerRequest) EqualCnt(other *types.ContainerJSON) bool {
 	idEqual := this.ID != "" && this.ID == other.ID
 	nameEqual := this.Name != "" && this.Name == strings.Trim(other.Name, "/")
-	return idEqual || nameEqual || matchIP
+	return idEqual || nameEqual
+}
+
+
+func (this ContainerRequest) EqualIPS(ips []string) bool {
+	if this.IP == "" {
+		return true
+	}
+	for _, ip := range ips {
+		if this.IP == ip {
+			return true
+		}
+	}
+	return false
 }
 
 func (cr *ContainerRequest) TimedOut() bool {

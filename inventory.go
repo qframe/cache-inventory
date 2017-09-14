@@ -10,7 +10,7 @@ import (
 
 type Inventory struct {
 	Version string
-	Data   map[string]types.ContainerJSON
+	Data   map[string]Response
 	PendingRequests []ContainerRequest
 	mux sync.Mutex
 }
@@ -18,28 +18,29 @@ type Inventory struct {
 func NewInventory() Inventory {
 	return Inventory{
 		Version: version,
-		Data: make(map[string]types.ContainerJSON),
+		Data: map[string]Response{},
 		PendingRequests: []ContainerRequest{},
 	}
 }
 
-func (i *Inventory) SetItem(key string, item types.ContainerJSON) (err error) {
+func (i *Inventory) SetItem(key string, item *types.ContainerJSON, ips []string) (err error) {
 	i.mux.Lock()
 	defer i.mux.Unlock()
-	i.Data[key] = item
+	resp := NewOKResponse(item, ips)
+	i.Data[key] = resp
 	return
 }
 
-func (i *Inventory) GetItem(key string) (cntOut types.ContainerJSON, err error) {
+func (i *Inventory) GetItem(key string) (out Response, err error) {
 	i.mux.Lock()
 	defer i.mux.Unlock()
 	if item, ok := i.Data[key];ok {
 		return item, err
 	}
-	return cntOut, errors.New(fmt.Sprintf("No item found with key '%s'", key))
+	return out, errors.New(fmt.Sprintf("No item found with key '%s'", key))
 }
 
-func filterItem(in ContainerRequest, other types.ContainerJSON) (out types.ContainerJSON, err error) {
+func filterItem(in ContainerRequest, other Response) (out Response, err error) {
 	if in.Equal(other) {
 		return other, err
 	}
@@ -49,12 +50,12 @@ func filterItem(in ContainerRequest, other types.ContainerJSON) (out types.Conta
 
 func (i *Inventory) HandleRequest(req ContainerRequest) (err error) {
 	if len(i.Data) == 0 {
-		return errors.New("Inventory is empty so far")
+		return errors.New("inventory is empty so far")
 	}
-	for _, cnt := range i.Data {
-		res, err := filterItem(req, cnt)
+	for _, resp := range i.Data {
+		res, err := filterItem(req, resp)
 		if err == nil {
-			req.Back <- NewOKResponse(&res)
+			req.Back <- NewOKResponse(res.Container, resp.Ips)
 			return err
 		} else if req.TimedOut() {
 			err = errors.New(fmt.Sprintf("Timed out after %s", req.Timeout.String()))
@@ -62,7 +63,7 @@ func (i *Inventory) HandleRequest(req ContainerRequest) (err error) {
 			return err
 		}
 	}
-	return errors.New("Could not match filter")
+	return errors.New("could not match filter")
 }
 
 
