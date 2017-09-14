@@ -119,6 +119,9 @@ func (p *Plugin) AddNetworkIPs(ips  mapset.Set, container *types.ContainerJSON) 
 		}
 		for cntID, cnt := range netInspect.Containers {
 			if cntID == container.ID {
+				if cnt.IPv4Address == "" {
+					continue
+				}
 				ip4 := strings.Split(cnt.IPv4Address, "/")
 				if len(ip4) != 2 {
 					p.Log("error", fmt.Sprintf("Container '%s' has unexpected IP '%s'... skip", cntID, cnt.IPv4Address))
