@@ -69,16 +69,7 @@ func (p *Plugin) Run() {
 			case qtypes_docker_events.ContainerEvent:
 				ce := val.(qtypes_docker_events.ContainerEvent)
 				if ce.Event.Type == "container" && ce.Event.Action == "start" {
-					ipSet := mapset.NewSet()
-					for _,v := range ce.Container.NetworkSettings.Networks {
-						ipSet.Add(v.IPAddress)
-					}
-					ips, err := p.AddNetworkIPs(ipSet, ce)
-					if err != nil {
-						p.Log("error", fmt.Sprintf("Error during AddNetworkIPs(): %s", err.Error()))
-					}
-					p.Log("debug", fmt.Sprintf("Add CntID:%s into Inventory (name:%s, IPs:%s)",ce.Container.ID[:13], ce.Container.Name, strings.Join(ips,",")))
-					p.Inventory.SetItem(ce.Container.ID, &ce.Container, ips)
+					go p.LookUpContainer(&ce.Container)
 				}
 			case ContainerRequest:
 				req := val.(ContainerRequest)
@@ -95,8 +86,20 @@ func (p *Plugin) Run() {
 		}
 	}
 }
+func (p *Plugin) LookUpContainer(cnt *types.ContainerJSON) {
+	ipSet := mapset.NewSet()
+	for _,v := range cnt.NetworkSettings.Networks {
+		ipSet.Add(v.IPAddress)
+	}
+	ips, err := p.AddNetworkIPs(ipSet, cnt)
+	if err != nil {
+		p.Log("error", fmt.Sprintf("Error during AddNetworkIPs(): %s", err.Error()))
+	}
+	p.Log("debug", fmt.Sprintf("Add CntID:%s into Inventory (name:%s, IPs:%s)",cnt.ID[:13], cnt.Name, strings.Join(ips,",")))
+	p.Inventory.SetItem(cnt.ID, cnt, ips)
+}
 
-func (p *Plugin) AddNetworkIPs(ips  mapset.Set, ce qtypes_docker_events.ContainerEvent) (res []string, err error) {
+func (p *Plugin) AddNetworkIPs(ips  mapset.Set, container *types.ContainerJSON) (res []string, err error) {
 	nets, err := p.engCli.NetworkList(ctx, types.NetworkListOptions{})
 	if err != nil {
 		p.Log("error", err.Error())
@@ -110,13 +113,13 @@ func (p *Plugin) AddNetworkIPs(ips  mapset.Set, ce qtypes_docker_events.Containe
 			continue
 		}
 		for cntID, cnt := range netInspect.Containers {
-			if cntID == ce.Container.ID {
+			if cntID == container.ID {
 				ip4 := strings.Split(cnt.IPv4Address, "/")
 				if len(ip4) != 2 {
 					p.Log("error", fmt.Sprintf("Container '%s' has unexpected IP '%s'... skip", cntID, cnt.IPv4Address))
 					continue
 				}
-				p.Log("trace", fmt.Sprintf("   Name:%-15s || %s==%s: %s", cnt.Name, cntID[:12], ce.Container.ID[:12], ip4[0]))
+				p.Log("trace", fmt.Sprintf("   Name:%-15s || %s==%s: %s", cnt.Name, cntID[:12], container.ID[:12], ip4[0]))
 				ips.Add(ip4[0])
 			}
 		}
