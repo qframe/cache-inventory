@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 	"github.com/docker/docker/api/types"
+	"fmt"
 )
 
 type ContainerRequest struct {
@@ -50,31 +51,39 @@ func NewIPContainerRequest(src, ip string) ContainerRequest {
 	return cr
 }
 
-func (this ContainerRequest) Equal(other Response) bool {
-	return this.EqualCnt(other.Container) && this.EqualIPS(other.Ips)
+func (this ContainerRequest) Equal(other Response) (err error) {
+	err = this.EqualCnt(other.Container)
+	if err != nil {
+		return
+	}
+	err = this.EqualIPS(other.Ips)
+	return
 }
 
-func (this ContainerRequest) EqualCnt(other *types.ContainerJSON) bool {
-	idEqual := this.ID != "" && this.ID == other.ID
-	nameEqual := this.Name != "" && this.Name == strings.Trim(other.Name, "/")
-	return idEqual || nameEqual
+func (this ContainerRequest) EqualCnt(other *types.ContainerJSON) (err error) {
+	if this.ID == "" && this.Name == "" {
+		return
+	}
+	if this.ID == other.ID || this.Name == strings.Trim(other.Name, "/") {
+		return
+	}
+	return fmt.Errorf("this.ID:%s != %s:ID.other || this.Name:%s != %s:Name.other", this.ID, other.ID, this.Name, other.Name)
 }
 
 
-func (this ContainerRequest) EqualIPS(ips []string) bool {
+func (this ContainerRequest) EqualIPS(ips []string) (err error) {
 	if this.IP == "" {
-		return true
+		return
 	}
 	for _, ip := range ips {
 		if this.IP == ip {
-			return true
+			return
 		}
 	}
-	return false
+	return fmt.Errorf("this.IP:%s not in %v", this.IP, ips)
 }
 
-func (cr *ContainerRequest) TimedOut() bool {
+func (cr *ContainerRequest) TimedOut()  bool {
 	tDiff := time.Now().Sub(cr.IssuedAt)
 	return tDiff > cr.Timeout
-
 }

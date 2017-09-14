@@ -11,7 +11,7 @@ var (
 )
 
 func TestNewOKResponse(t *testing.T) {
-	r := NewOKResponse(cnt)
+	r := NewOKResponse(&cnt, []string{})
 	assert.NoError(t, r.Error, "Should create a response with a nil error")
 }
 

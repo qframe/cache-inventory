@@ -74,7 +74,10 @@ func (p *Plugin) Run() {
 			case ContainerRequest:
 				req := val.(ContainerRequest)
 				p.Log("debug", fmt.Sprintf("Received InventoryRequest for %v", req))
-				p.Inventory.ServeRequest(req)
+				err := p.Inventory.ServeRequest(req)
+				if err != nil {
+					p.Log("error", fmt.Sprintf("Error when ServeRequest(): %s", err.Error()))
+				}
 			default:
 				p.Log("trace", fmt.Sprintf("Dunno type '%s': %v", reflect.TypeOf(val), val))
 
@@ -86,6 +89,7 @@ func (p *Plugin) Run() {
 		}
 	}
 }
+
 func (p *Plugin) LookUpContainer(cnt *types.ContainerJSON) {
 	ipSet := mapset.NewSet()
 	for _,v := range cnt.NetworkSettings.Networks {
@@ -100,6 +104,7 @@ func (p *Plugin) LookUpContainer(cnt *types.ContainerJSON) {
 }
 
 func (p *Plugin) AddNetworkIPs(ips  mapset.Set, container *types.ContainerJSON) (res []string, err error) {
+	p.Log("debug", fmt.Sprintf("List before lookup: %v", GetList(ips)))
 	nets, err := p.engCli.NetworkList(ctx, types.NetworkListOptions{})
 	if err != nil {
 		p.Log("error", err.Error())
@@ -124,6 +129,7 @@ func (p *Plugin) AddNetworkIPs(ips  mapset.Set, container *types.ContainerJSON) 
 			}
 		}
 	}
+	p.Log("debug", fmt.Sprintf("List after lookup: %v", GetList(ips)))
 	return GetList(ips), err
 }
 

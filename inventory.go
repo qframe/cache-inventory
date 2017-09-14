@@ -41,10 +41,11 @@ func (i *Inventory) GetItem(key string) (out Response, err error) {
 }
 
 func filterItem(in ContainerRequest, other Response) (out Response, err error) {
-	if in.Equal(other) {
+	err = in.Equal(other)
+	if err == nil {
 		return other, err
 	}
-	return out, errors.New("filter does not match")
+	return out, err
 }
 
 
@@ -67,13 +68,14 @@ func (i *Inventory) HandleRequest(req ContainerRequest) (err error) {
 }
 
 
-func (i *Inventory) ServeRequest(req ContainerRequest) {
-	err := i.HandleRequest(req)
+func (i *Inventory) ServeRequest(req ContainerRequest) (err error) {
+	err = i.HandleRequest(req)
 	if err != nil {
 		i.mux.Lock()
 		i.PendingRequests = append(i.PendingRequests, req)
 		i.mux.Unlock()
 	}
+	return
 }
 
 
