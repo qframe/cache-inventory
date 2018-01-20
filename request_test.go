@@ -47,9 +47,9 @@ func NewBridgedOnlyContainer(id, name, ip string) types.ContainerJSON {
 
 func TestContainer_NonEqual(t *testing.T) {
 	cnt := NewContainer("CntID1", "CntName1", map[string]string{"eth0": "172.17.0.2"})
-	resp := NewOKResponse(&cnt, []string{"10.0.0.1"})
+	resp := NewOKResponse(&cnt, &info1, []string{"10.0.0.1"})
 	cntB := NewBridgedOnlyContainer("CntID2", "CntName2", "192.168.0.1")
-	respB := NewOKResponse(&cntB, []string{"10.0.0.2"})
+	respB := NewOKResponse(&cntB, &info1, []string{"10.0.0.2"})
 	checkIP := NewIPContainerRequest("src1", "172.17.0.1")
 	assert.Error(t, checkIP.Equal(resp))
 	assert.Error(t, checkIP.Equal(respB))
@@ -78,7 +78,7 @@ func TestContainer_EqualCnt(t *testing.T) {
 
 func TestContainer_Equal(t *testing.T) {
 	cnt := NewContainer("CntID1", "CntName1", map[string]string{"eth0": "172.17.0.2"})
-	resp := NewOKResponse(&cnt, []string{"10.0.0.1"})
+	resp := NewOKResponse(&cnt, &info1, []string{"172.17.0.2"})
 	checkIP := NewIPContainerRequest("src1", "172.17.0.2")
 	assert.NoError(t, checkIP.EqualIPS([]string{"172.17.0.2"}))
 	assert.NoError(t, checkIP.EqualCnt(&cnt))
@@ -87,14 +87,14 @@ func TestContainer_Equal(t *testing.T) {
 	assert.NoError(t, checkName.Equal(resp))
 	checkID := ContainerRequest{ID: "CntID1"}
 	assert.NoError(t, checkID.Equal(resp))
-	checkIP2 := NewIPContainerRequest("src1", "10.0.0.1")
+	checkIP2 := NewIPContainerRequest("src1", "172.17.0.2")
 	assert.NoError(t, checkIP2.Equal(resp))
 
 }
 
 func TestContainer_BridgeEqual(t *testing.T) {
 	cnt := NewBridgedOnlyContainer("CntID2", "CntName2","172.17.0.2")
-	resp := NewOKResponse(&cnt, []string{"10.0.0.1"})
+	resp := NewOKResponse(&cnt, &info1, []string{"172.17.0.2"})
 	checkIP := NewIPContainerRequest("src1", "172.17.0.2")
 	assert.NoError(t, checkIP.Equal(resp))
 	checkName := ContainerRequest{Name: "CntName2"}
