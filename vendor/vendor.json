@@ -268,52 +268,64 @@
 			"revisionTime": "2016-01-10T10:55:54Z"
 		},
 		{
-			"checksumSHA1": "vACp1rS5orDZylvZs/K0m5uC6Dc=",
+			"checksumSHA1": "HoYrbEmfMY5u+QTU+unZ9zgNDKQ=",
+			"path": "github.com/qframe/cache-inventory",
+			"revision": "8614b13779baaef88c1c277750dc796652c850f0",
+			"revisionTime": "2018-01-20T12:02:33Z"
+		},
+		{
+			"checksumSHA1": "JY59voj44Lq6X7fHt6Bjx6v6xI0=",
+			"path": "github.com/qframe/cache-inventory/cmd",
+			"revision": "8614b13779baaef88c1c277750dc796652c850f0",
+			"revisionTime": "2018-01-20T12:02:33Z"
+		},
+		{
+			"checksumSHA1": "61M900ev4ILWiX9+aNXCvTs5M9U=",
 			"path": "github.com/qframe/collector-docker-events",
-			"revision": "b61b5f26a1289f2d97ff6960a7eacf2bdaf134f1",
-			"revisionTime": "2017-08-29T12:27:43Z"
+			"revision": "2fe0c644d6aec76fed298da66999f23e2357e006",
+			"revisionTime": "2017-10-07T12:42:31Z"
 		},
 		{
 			"checksumSHA1": "ZokxRO/FavchTs9BrbmiCZNrzO4=",
 			"path": "github.com/qframe/types/constants",
-			"revision": "2758c866567c68edd13e71ee9ff2389885d57d93",
-			"revisionTime": "2017-08-14T20:17:02Z"
+			"revision": "de8e76eb8ae6acf719916349d8732844b8b29e34",
+			"revisionTime": "2017-12-08T09:47:13Z"
 		},
 		{
-			"checksumSHA1": "qTxHjY8oFOfYzlsu582xuqckC50=",
+			"checksumSHA1": "jcosGG3NvoLiO9zHRqjo+K8YCoY=",
 			"path": "github.com/qframe/types/docker-events",
-			"revision": "2758c866567c68edd13e71ee9ff2389885d57d93",
-			"revisionTime": "2017-08-14T20:17:02Z"
+			"revision": "de8e76eb8ae6acf719916349d8732844b8b29e34",
+			"revisionTime": "2017-12-08T09:47:13Z"
 		},
 		{
-			"checksumSHA1": "IypK2Ok21t3MqgtbokuPmA9ZSBY=",
+			"checksumSHA1": "eui+Vpf5HPkJOo7Tq/femYY+DEU=",
 			"path": "github.com/qframe/types/helper",
-			"revision": "2758c866567c68edd13e71ee9ff2389885d57d93",
-			"revisionTime": "2017-08-14T20:17:02Z"
+			"revision": "de8e76eb8ae6acf719916349d8732844b8b29e34",
+			"revisionTime": "2017-12-08T09:47:13Z"
 		},
 		{
-			"checksumSHA1": "r7K3SiWYIZo+wbR954dXdwt4iJI=",
+			"checksumSHA1": "LZYH4iiCnbsqylb68zUoFYcj204=",
 			"path": "github.com/qframe/types/messages",
-			"revision": "2758c866567c68edd13e71ee9ff2389885d57d93",
-			"revisionTime": "2017-08-14T20:17:02Z"
+			"revision": "de8e76eb8ae6acf719916349d8732844b8b29e34",
+			"revisionTime": "2017-12-08T09:47:13Z"
 		},
 		{
-			"checksumSHA1": "KZkRw3xQrMDQL5PVxCPOuV9HeaU=",
+			"checksumSHA1": "u26L1++2rh5wNBbB8F+p8q2tCiQ=",
 			"path": "github.com/qframe/types/plugin",
-			"revision": "2758c866567c68edd13e71ee9ff2389885d57d93",
-			"revisionTime": "2017-08-14T20:17:02Z"
+			"revision": "de8e76eb8ae6acf719916349d8732844b8b29e34",
+			"revisionTime": "2017-12-08T09:47:13Z"
 		},
 		{
 			"checksumSHA1": "bI9DmB1P2XfVkog5EvRu01AZ4Uc=",
 			"path": "github.com/qframe/types/qchannel",
-			"revision": "2758c866567c68edd13e71ee9ff2389885d57d93",
-			"revisionTime": "2017-08-14T20:17:02Z"
+			"revision": "de8e76eb8ae6acf719916349d8732844b8b29e34",
+			"revisionTime": "2017-12-08T09:47:13Z"
 		},
 		{
 			"checksumSHA1": "aWT8tf2NLTwFLrrTSEZCraccjMI=",
 			"path": "github.com/qframe/types/ticker",
-			"revision": "2758c866567c68edd13e71ee9ff2389885d57d93",
-			"revisionTime": "2017-08-14T20:17:02Z"
+			"revision": "de8e76eb8ae6acf719916349d8732844b8b29e34",
+			"revisionTime": "2017-12-08T09:47:13Z"
 		},
 		{
 			"checksumSHA1": "BYvROBsiyAXK4sq6yhDe8RgT4LM=",
